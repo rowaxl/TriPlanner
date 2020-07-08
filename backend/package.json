@@ -1,0 +1,21 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "author": "rowaxl <rowaxl0@gmail.com>",
+  "keywords": [],
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "start": "./bin/app",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "ejs": "^3.1.3",
+    "express": "^4.17.1",
+    "http-errors": "^1.8.0",
+    "pino": "^6.3.2",
+    "pino-http": "^5.2.0",
+    "pino-pretty": "^4.0.0"
+  }
+}
