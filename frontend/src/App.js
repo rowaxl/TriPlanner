@@ -2,7 +2,6 @@ import React from 'react';
 import {
   Switch,
   Route,
-  Link,
   withRouter
 } from "react-router-dom";
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
@@ -16,17 +15,6 @@ const App = ({ location }) => {
     <Paper id="background" square>
       <Container id="app-container" maxWidth="xl">
         <Card id="app-base-card">
-          <nav>
-            <ul>
-              <li>
-                <Link to="/">Index</Link>
-              </li>
-              <li>
-                <Link to="/trips">Trips</Link>
-              </li>
-            </ul>
-          </nav>
-
           <TransitionGroup className="transition-group">
             <CSSTransition
               key={ location.key }
@@ -34,7 +22,7 @@ const App = ({ location }) => {
               classNames={'fade'}
             >
               <section className="route-section">
-                <Switch>
+                <Switch location={location}>
                   <Route exact path="/">
                     <Index />
                   </Route>

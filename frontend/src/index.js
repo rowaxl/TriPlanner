@@ -2,15 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
+
+import Root from './Root';
 import './styles/index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-  <Router>
-    <CssBaseline />
-    <App />
-  </Router>,
+  <Root>
+    <React.Fragment>
+      <Router>
+        <CssBaseline />
+        <App />
+      </Router>
+    </React.Fragment>
+  </Root>,
   document.getElementById('root')
 );
 
