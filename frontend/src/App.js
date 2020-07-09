@@ -1,26 +1,54 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+  Switch,
+  Route,
+  Link,
+  withRouter
+} from "react-router-dom";
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import { Paper, Container, Card } from '@material-ui/core';
+import './styles/App.css';
+import Index from './pages/index';
+import Trips from './pages/trips';
 
-function App() {
+const App = ({ location }) => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Paper id="background" square>
+      <Container id="app-container" maxWidth="xl">
+        <Card id="app-base-card">
+          <nav>
+            <ul>
+              <li>
+                <Link to="/">Index</Link>
+              </li>
+              <li>
+                <Link to="/trips">Trips</Link>
+              </li>
+            </ul>
+          </nav>
+
+          <TransitionGroup className="transition-group">
+            <CSSTransition
+              key={ location.key }
+              timeout={{ enter: 300, exit: 300 }}
+              classNames={'fade'}
+            >
+              <section className="route-section">
+                <Switch>
+                  <Route exact path="/">
+                    <Index />
+                  </Route>
+                  <Route path="/trips">
+                    <Trips />
+                  </Route>
+                </Switch>
+              </section>
+            </CSSTransition>
+          </TransitionGroup>
+        </Card>
+      </Container>
+    </Paper>
   );
 }
 
-export default App;
+export default withRouter(App);

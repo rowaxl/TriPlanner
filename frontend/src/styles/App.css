@@ -1,0 +1,49 @@
+#background {
+  background: -webkit-linear-gradient(110deg, #7991fa 30%, rgba(0, 0, 0, 0) 20%), -webkit-linear-gradient(135deg, #374fbd 70%, #909fdf 30%);
+  background: -o-linear-gradient(110deg, #7991fa 30%, rgba(0, 0, 0, 0) 20%), -o-linear-gradient(135deg, #374fbd 70%, #909fdf 30%);
+  background: -moz-linear-gradient(110deg, #7991fa 30%, rgba(0, 0, 0, 0) 20%), -moz-linear-gradient(135deg, #374fbd 70%, #909fdf 30%);
+  background: linear-gradient(110deg, #7991fa 30%, rgba(0, 0, 0, 0) 20%), linear-gradient(135deg, #374fbd 70%, #909fdf 30%);
+  height: 100vh;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+#app-container {
+  margin: auto;
+  height: 95vh;
+}
+
+#app-base-card {
+  margin: auto;
+  height: 90vh;
+}
+
+.fade-enter {
+  opacity: 0.01;
+}
+
+.fade-enter.fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit.fade-exit-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
+div.transition-group {
+  position: relative;
+}
+
+section.route-section {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
