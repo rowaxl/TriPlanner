@@ -17,6 +17,7 @@
 #app-base-card {
   margin: auto;
   height: 90vh;
+  overflow: scroll;
 }
 
 .fade-enter {
