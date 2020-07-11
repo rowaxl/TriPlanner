@@ -8,6 +8,8 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 
 import SigninForm from '../components/signinForm';
+import CardBar from '../components/cardBar';
+
 import {
   getFormValues,
   getFormSyncErrors,
@@ -15,10 +17,16 @@ import {
 } from 'redux-form';
 
 import { hash } from '../libs/utils';
+import { callSignIn } from '../apis/user';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   title: {
     textAlign: "center"
+  },
+  titleEmphasize: {
+    color: theme.palette.success.main,
+    fontWeight: 800,
   },
   root: {
     display: 'flex',
@@ -32,15 +40,17 @@ const useStyles = makeStyles((theme) => ({
     padding: 20,
     minWidth: 350,
     width: "30%",
-    minHeight: 350
+    minHeight: 350,
+    border: "none",
   },
 }));
 
 let Index = props => {
   const classes = useStyles();
   const [formError, setFormError] = useState({});
+  const history = useHistory();
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     const { valid, syncErrors } = props;
 
     if (!valid) {
@@ -52,7 +62,14 @@ let Index = props => {
     const pass = hash(values['signin-password']);
 
     // TODO: DO SIGNIN
+    const { accessToken } = await callSignIn(id, pass).catch(reason => {
+      // TODO: handle signin error
+    });
+    
     // TODO: Set Access-token in store
+    console.log(accessToken);
+
+    history.push('/trips');
   }
 
   const mapFormError = () => {
@@ -74,15 +91,17 @@ let Index = props => {
 
   return (
     <CardContent className={classes.root}>
+      <CardBar />
+
       <Typography className={classes.title} variant="h4">
-        Welcome to TriPlanner!
+        Welcome to TRI<span className={classes.titleEmphasize}>P</span>LANNER!
       </Typography>
 
       <Typography className={classes.title} variant="h6">
-        You can manage your Trip plans Easily! Please Sign in and continue!
+        The easiest travel plan manager
       </Typography>
 
-      <Card className={classes.signinForm} elevation={3}>
+      <Card className={classes.signinForm} variant="outlined">
         <Typography className={classes.title} variant="h4">
           Sign In
         </Typography>
