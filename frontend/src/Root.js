@@ -6,6 +6,11 @@ import reducers from './reducers'
 
 export default ({ children, initialState = {} }) => {
   const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  const accessToken = localStorage.getItem('accesstoken');
+  if (accessToken && accessToken.length > 0) {
+    Object.assign(initialState, { auth: accessToken });
+  }
+
   const store = createStore(
     reducers,
     initialState,

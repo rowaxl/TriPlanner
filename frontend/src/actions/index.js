@@ -1,9 +1,10 @@
-import { CHANGE_AUTH } from './types';
+import { UPDATE_AUTH } from './types';
 
-export const updateAuth = ({ id, password }) => {
-  // TODO: call signin api and get access-token
+export const updateAuth = token => {
+  localStorage.setItem('accesstoken', token);
+
   return {
-    type: CHANGE_AUTH,
-    payload: '' // TODO: set access-token
+    type: UPDATE_AUTH,
+    payload: token
   }
 }

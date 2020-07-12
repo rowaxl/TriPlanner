@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import {
   Card,
   CardContent,
   Typography,
 } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 
 import SigninForm from '../components/signinForm';
@@ -18,7 +19,7 @@ import {
 
 import { hash } from '../libs/utils';
 import { callSignIn } from '../apis/user';
-import { useHistory } from 'react-router-dom';
+import { updateAuth } from '../actions';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -50,6 +51,11 @@ let Index = props => {
   const [formError, setFormError] = useState({});
   const history = useHistory();
 
+  useEffect(() => {
+    if (props.auth && props.auth.length > 0)
+      history.push('/trips');
+  });
+
   const onSubmit = async () => {
     const { valid, syncErrors } = props;
 
@@ -66,8 +72,8 @@ let Index = props => {
       // TODO: handle signin error
     });
     
-    // TODO: Set Access-token in store
-    console.log(accessToken);
+    // Set Access-token in store
+    props.updateAuth(accessToken);
 
     history.push('/trips');
   }
@@ -112,10 +118,17 @@ let Index = props => {
   );
 }
 
-Index = connect(state => ({
+const mapStateToProps = state => ({
   values: getFormValues('signin')(state),
   syncErrors: getFormSyncErrors('signin')(state),
-  valid: isValid('signin')(state)
-}))(Index);
+  valid: isValid('signin')(state),
+  auth: state.auth
+});
+
+const matDispatchToProps = dispatch => ({
+  updateAuth: (token) => dispatch(updateAuth(token))
+});
+
+Index = connect(mapStateToProps, matDispatchToProps)(Index);
 
 export default Index;
