@@ -21,10 +21,13 @@ let TripCard = props => {
   const { trip } = props;
   const classes = useStyles();
 
-  // TODO: route event
+  const handleOnclick = () => {
+    props.onTripClick(trip.id);
+  }
+
   return (
     <Card className={classes.eventCard}>
-      <CardActionArea>
+      <CardActionArea onClick={handleOnclick}>
         <CardMedia
           component="img"
           image={trip.thumbnail}
