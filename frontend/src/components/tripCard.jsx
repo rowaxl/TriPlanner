@@ -7,6 +7,7 @@ import {
   CardActionArea,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { convertToDay } from '../libs/utils';
 
 const useStyles = makeStyles(theme => ({
   eventCard: {
@@ -39,7 +40,7 @@ let TripCard = props => {
           <Typography gutterBottom variant="h5" component="h3">{trip.destination}</Typography>
 
           <Typography variant="body1" color="textSecondary" component="p">
-            {new Date(trip.startDate).toLocaleDateString() } ~ {new Date(trip.endDate).toLocaleDateString()} ({(trip.endDate - trip.startDate) / (1000 * 3600 * 24)} days)
+            {new Date(trip.startDate).toLocaleDateString() } ~ {new Date(trip.endDate).toLocaleDateString()} ({convertToDay(trip.endDate - trip.startDate)} days)
           </Typography>
         </CardContent>
       </CardActionArea>

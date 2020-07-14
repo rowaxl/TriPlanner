@@ -8,13 +8,10 @@ import {
   Paper,
   Card,
   CardActionArea,
-  CardMedia,
-  Modal,
-  Backdrop,
-  Fade
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { makeStyles } from '@material-ui/core/styles';
+import { nanoid } from 'nanoid';
 
 import '../styles/trips.css';
 import CardBar from '../components/cardBar';
@@ -31,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   },
   createButton: {
     position: "fixed",
-    right: "5%",
+    right: "10%",
     bottom: "10%",
   },
   sectionTitle: {
@@ -100,23 +97,25 @@ let Trips = props => {
 
   // TODO: get upcoming events from server
   const dummyTrips = [
-    { id: '111', title: 'Winter Vacation', destination: 'Yellowknife', startDate: 1594450800000, endDate: 1594796400000, thumbnail: 'https://images.unsplash.com/photo-1525177089949-b1488a0ea5b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80' },
-    { id: '123', title: 'Winter Vacation', destination: 'Yellowknife', startDate: 1594623600000, endDate: 1594796400000, thumbnail: 'https://images.unsplash.com/photo-1525177089949-b1488a0ea5b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80' },
-    { id: '456', title: 'Winter Vacation', destination: 'Yellowknife', startDate: 1595228400000, endDate: 1596178800000, thumbnail: 'https://images.unsplash.com/photo-1525177089949-b1488a0ea5b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80' },
-    { id: '789', title: 'Winter Vacation', destination: 'Yellowknife', startDate: 1596265200000, endDate: 1596351600000, thumbnail: 'https://images.unsplash.com/photo-1525177089949-b1488a0ea5b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80' },
-    { id: '012', title: 'Winter Vacation', destination: 'Yellowknife', startDate: 1598857200000, endDate: 1598943600000, thumbnail: 'https://images.unsplash.com/photo-1525177089949-b1488a0ea5b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80' },
+    // { id: '111', description: 'Winter Vacation', destination: 'Yellowknife', startDate: 1594450800000, endDate: 1594796400000, thumbnail: 'https://images.unsplash.com/photo-1525177089949-b1488a0ea5b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80' },
+    // { id: '123', description: 'Winter Vacation', destination: 'Yellowknife', startDate: 1594623600000, endDate: 1594796400000, thumbnail: 'https://images.unsplash.com/photo-1525177089949-b1488a0ea5b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80' },
+    // { id: '456', description: 'Winter Vacation', destination: 'Yellowknife', startDate: 1595228400000, endDate: 1596178800000, thumbnail: 'https://images.unsplash.com/photo-1525177089949-b1488a0ea5b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80' },
+    // { id: '789', description: 'Winter Vacation', destination: 'Yellowknife', startDate: 1596265200000, endDate: 1596351600000, thumbnail: 'https://images.unsplash.com/photo-1525177089949-b1488a0ea5b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80' },
+    // { id: '012', description: 'Winter Vacation', destination: 'Yellowknife', startDate: 1598857200000, endDate: 1598943600000, thumbnail: 'https://images.unsplash.com/photo-1525177089949-b1488a0ea5b6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80' },
   ];
   const [trips, setTrips] = useState(dummyTrips);
 
   const [showTripDetail, setTripCardDetail] = useState(false);
   const [tripDetail, setTripDetail] = useState(null);
+  const [detailType, setDetailType] = useState('');
 
   useEffect(() => {
     if (!props.auth || props.auth.length < 1)
       history.push('/');
-  });
+  }, [trips]);
 
-  const renderEvents = (type) => {
+  const renderTrips = (type) => {
+    console.log(trips);
     if (trips.length === 0) {
       return <Typography className={classes.messageNoTrips} variant="h5">There is no trips yet!</Typography>;
     }
@@ -138,18 +137,23 @@ let Trips = props => {
           || (endDate >= nextMonthStartDate && endDate <= nextMonthEndDate);
       }
       : (e) => {
+        console.log(e);
         const startDate = new Date(e.startDate);
         const endDate = new Date(e.endDate);
+        endDate.setHours(23, 59, 59, 999);
         const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        console.log(today.getTime());
 
         return startDate >= today || endDate >= today;
       };
-  
+
     const tripCards = trips
       .sort((a, b) => a.startDate - b.startDate)
       .filter(filterOption)
       .map(trip => <TripCard key={trip.id} trip={trip} onTripClick={openTripDetail} />);
 
+    console.log(tripCards);
     if (tripCards.length === 0) {
       return <Typography className={classes.messageNoTrips} variant="h5">There is no trips yet!</Typography>;
     }
@@ -171,6 +175,7 @@ let Trips = props => {
     const target = trips.find(trip => trip.id === id);
 
     if (target) {
+      setDetailType('view');
       setTripDetail(target);
       setTripCardDetail(true);
     }
@@ -181,6 +186,21 @@ let Trips = props => {
     setTripCardDetail(false);
   }
 
+  const onClickCreateTrip = () => {
+    setDetailType('create');
+    setTripDetail({});
+    setTripCardDetail(true);
+  }
+
+  const saveTrip = (tripDetail) => {
+    Object.assign(tripDetail, { id: nanoid() });
+
+    setTrips([...trips, tripDetail].sort((a, b) => a.startDate - b.startDate));
+    setTripDetail(null);
+    setTripCardDetail(false);
+    // TODO: POST /trip
+  }
+
   return (
     <CardContent className={classes.root}>
       <CardBar />
@@ -188,7 +208,7 @@ let Trips = props => {
       <Typography className={classes.sectionTitle} variant="h4">Upcomming Trips!</Typography>
       <Paper className={classes.eventSquare}>
         <div className={classes.eventWrap}>
-          { renderEvents('upcoming') }
+          { renderTrips('upcoming') }
         </div>
         
       </Paper>
@@ -196,15 +216,21 @@ let Trips = props => {
       <Typography className={classes.sectionTitle} variant="h4">Plans for next month(Aug 2020)</Typography>
       <Paper className={classes.eventSquare}>
         <div className={classes.eventWrap}>
-          { renderEvents('nextMonth') }
+          { renderTrips('nextMonth') }
         </div>
       </Paper>
 
-      <Fab id="fab-create-plan" className={classes.createButton} aria-label="add">
+      <Fab id="fab-create-plan" className={classes.createButton} aria-label="add" onClick={onClickCreateTrip}>
         <AddIcon />
       </Fab>
 
-      <TripDetail tripDetail={tripDetail} showTripDetail={showTripDetail} closeTripDetail={closeTripDetail} />
+      <TripDetail
+        detailType={detailType}
+        tripDetail={tripDetail}
+        showTripDetail={showTripDetail}
+        closeTripDetail={closeTripDetail}
+        saveTrip={saveTrip}
+      />
     </CardContent>
   );
 }

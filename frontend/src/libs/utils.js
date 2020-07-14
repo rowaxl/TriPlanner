@@ -7,3 +7,5 @@ export const hash = (text) => {
 
   return AES.decrypt(encrypted, SECRET).toString(enc.Utf8);
 };
+
+export const convertToDay = (millisec) => parseInt(millisec / (1000 * 3600 * 24));
