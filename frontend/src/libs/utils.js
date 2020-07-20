@@ -1,11 +1,11 @@
-import { AES, enc } from 'crypto-js';
+import { AES } from 'crypto-js';
 
 const SECRET = '||thisIsSecret||';
-export const hash = (text) => {
-  // const encrypted = AES.encrypt(text + Date.now(), SECRET);
-  const encrypted = AES.encrypt(text + 1594421983403, SECRET);
-
-  return AES.decrypt(encrypted, SECRET).toString(enc.Utf8);
-};
+export const hash = (text) => AES.encrypt(text + Date.now(), SECRET).toString();
 
 export const convertToDay = (millisec) => parseInt(millisec / (1000 * 3600 * 24));
+
+export const USER_ROLE = {
+  USER: 1,
+  ADMIN: 2
+};

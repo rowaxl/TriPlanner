@@ -4,6 +4,11 @@ import {
   Card,
   CardContent,
   Typography,
+  Modal,
+  Backdrop,
+  Fade,
+  Button,
+  TextField,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,9 +22,9 @@ import {
   isValid,
 } from 'redux-form';
 
-import { hash } from '../libs/utils';
-import { callSignIn } from '../apis/user';
-import { updateAuth } from '../actions';
+import { hash, USER_ROLE } from '../libs/utils';
+import { callSignIn, callSignup } from '../apis/user';
+import { updateAuth, updateUserDetail } from '../actions';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -44,15 +49,53 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 350,
     border: "none",
   },
+  showSignupButton: {
+    color: theme.palette.success.main,
+    marginLeft: 10,
+    marginBottom: 5,
+  },
+  signupForm: {
+    width: 500,
+    height: 300,
+  },
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  formInput: {
+    width: '100%',
+    marginBottom: 10,
+  },
+  signupButton: {
+    background: theme.palette.success.main,
+    color: '#fff'
+  },
+  discardButton: {
+    background: theme.palette.grey[400],
+    color: '#fff'
+  },
+  buttonWrap: {
+    marginTop: 20,
+    display: 'flex',
+    justifyContent: 'space-around',
+  },
 }));
 
 let Index = props => {
   const classes = useStyles();
   const [formError, setFormError] = useState({});
+  const [showSignup, setShowSignup] = useState(false);
+  const [signupID, setSignupID] = useState('');
+  const [signupName, setSignupName] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+
+  const { auth, setAuth, setUserId } = props;
+
   const history = useHistory();
 
   useEffect(() => {
-    if (props.auth && props.auth.length > 0)
+    if (auth && auth.length > 0)
       history.push('/trips');
   });
 
@@ -67,13 +110,18 @@ let Index = props => {
     const id = values['signin-id'];
     const pass = hash(values['signin-password']);
 
-    // TODO: DO SIGNIN
-    const { accessToken } = await callSignIn(id, pass).catch(reason => {
-      // TODO: handle signin error
-    });
+    const { accessToken, userId } = await callSignIn(id, pass);
+
+    if (!accessToken || !userId) {
+      // TODO: error modal
+      console.log('Failed to signin');
+      return;
+    }
     
     // Set Access-token in store
-    props.updateAuth(accessToken);
+    setAuth(accessToken);
+
+    setUserId(userId);
 
     history.push('/trips');
   }
@@ -95,6 +143,47 @@ let Index = props => {
     setFormError({}); // reset form error
   }
 
+  const openSignup = () => {
+    setShowSignup(true);
+  };
+
+  const closeSignup = () => {
+    setShowSignup(false);
+    setSignupID('');
+    setSignupName('');
+    setSignupPassword('');
+  }
+
+  const onChangeSignupId = e => {
+    setSignupID(e.target.value);
+  }
+
+  const onChangeSignupName = e => {
+    setSignupName(e.target.value);
+  }
+
+  const onChangeSignupPassword = e => {
+    setSignupPassword(e.target.value);
+  }
+
+  const handleSignup = async () => {
+    await callSignup(signupID, signupName, hash(signupPassword), USER_ROLE.USER).catch(reason => {
+      // TODO: handle signup error
+    });
+
+    setShowSignup(false);
+
+    const { accessToken, userId } = await callSignIn(signupID, hash(signupPassword)).catch(reason => {
+      // TODO: handle signin error
+    });
+
+    // Set Access-token in store
+    setAuth(accessToken);
+    setUserId(userId);
+
+    history.push('/trips');
+  }
+
   return (
     <CardContent className={classes.root}>
       <CardBar />
@@ -113,7 +202,55 @@ let Index = props => {
         </Typography>
         <SigninForm handleSubmit={onSubmit} onChange={onChanged} />
         {mapFormError()}
+
+        <Typography variant="h5" component="span">
+          If you don't have account, 
+        </Typography>
+        <Button
+          className={classes.showSignupButton}
+          onClick={openSignup}
+        >
+          Sign up
+        </Button>
+        !
       </Card>
+
+      <Modal
+        className={classes.modal}
+        open={showSignup}
+        onClose={closeSignup}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 300,
+        }}
+        disableBackdropClick
+        disableEscapeKeyDown
+      >
+        <Fade in={showSignup}>
+          <Card className={classes.signupForm}>
+            <CardContent>
+              <Typography variant="h5">Sign up</Typography>
+
+              <form className={classes.form} onSubmit={null} autoComplete="off">
+                <div className={classes.formInput}>
+                  <TextField label="ID" name="signup-id" fullWidth type="text"  onChange={onChangeSignupId} />
+                </div>
+                <div className={classes.formInput}>
+                  <TextField label="Name" name="signup-name" fullWidth type="text"  onChange={onChangeSignupName} />
+                </div>
+                <div className={classes.formInput}>
+                  <TextField label="Password" name="signup-password" fullWidth type="password" onChange={onChangeSignupPassword} />
+                </div>
+              </form>
+              <div className={classes.buttonWrap}>
+                <Button className={classes.signupButton} type="submit" variant="contained" onClick={handleSignup}>Sign up</Button>
+                <Button className={classes.discardButton} variant="contained" onClick={closeSignup} >Discard</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </Fade>
+      </Modal>
     </CardContent>
   );
 }
@@ -126,7 +263,8 @@ const mapStateToProps = state => ({
 });
 
 const matDispatchToProps = dispatch => ({
-  updateAuth: (token) => dispatch(updateAuth(token))
+  setAuth: (auth) => dispatch(updateAuth(auth)),
+  setUserId: (id) => dispatch(updateUserDetail({ _id: id }))
 });
 
 Index = connect(mapStateToProps, matDispatchToProps)(Index);

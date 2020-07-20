@@ -13,11 +13,12 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import PanoramaIcon from '@material-ui/icons/Panorama';
-import { makeStyles } from '@material-ui/core/styles';
-import { convertToDay } from '../libs/utils';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
-// TODO: change this to API
-import dummyDestination from '../libs/dummyDestination';
+import { makeStyles } from '@material-ui/core/styles';
+import moment from 'moment';
+
+import { convertToDay } from '../libs/utils';
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -47,6 +48,7 @@ const useStyles = makeStyles(theme => ({
   tripDetails: {
     height: '15vh',
     minHeight: 150,
+    position: 'relative'
   },
   datePicker: {
     display: 'inline-flex',
@@ -93,15 +95,41 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
   },
+  tripUserNameWrap: {
+    position: 'absolute',
+    right: '5%',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  userIcon: {
+    color: theme.palette.success.main,
+    marginRight: 10,
+  },
 }));
 
 let TripDetail = props => {
   const classes = useStyles();
-  const { tripDetail, showTripDetail, closeTripDetail, detailType, saveTrip } = props;
-  const today = new Date().toISOString().substring(0, 10);
-  const initialNewTrip = { destination: '', startDate: today, endDate: today, description: '' };
+  const {
+    destinations,
+    tripDetail,
+    showTripDetail,
+    closeTripDetail,
+    detailType,
+    saveTrip,
+    handleEdit,
+    handleDelete,
+    saveEditTrip,
+  } = props;
+
+  const today = new Date();
+  const nextDay = new Date();
+  nextDay.setDate(today.getDate() + 1);
+
+  const todayStart = moment(today).startOf('day').unix() * 1000;
+  const todayEnd = moment(nextDay).startOf('day').unix() * 1000;
+
+  const initialNewTrip = { destination: '', startDate: todayStart, endDate: todayEnd, description: '' };
   const [newTripDetail, setNewTripDetail] = useState(initialNewTrip);
-  const [destinations, setDestinations] = useState(dummyDestination);
 
   if (!tripDetail) {
     return <></>;
@@ -117,16 +145,16 @@ let TripDetail = props => {
       return `${startDate.toLocaleDateString()} (Remain ${remainDate} days) ~ ${endDate.toLocaleDateString()} (${(endDate - startDate) / (1000 * 3600 * 24)} days)`;
     }
 
-    return `${ startDate.toLocaleDateString() } ~ ${endDate.toLocaleDateString()} (${convertToDay(endDate - startDate)} days)`;
-  }
+    return `${startDate.toLocaleDateString()} ~ ${endDate.toLocaleDateString()} (${convertToDay(endDate - startDate)} days)`;
+  };
 
   const changeStartDate = event => {
     const input = event.target.value;
-    const startDate = new Date(input).getTime();
+    const startDate = moment(input).unix() * 1000;
     const newDetail = { ...newTripDetail, startDate: startDate };
 
-    if (startDate > newTripDetail.endDate) {
-      newDetail.endDate = startDate;
+    if (startDate > moment(newTripDetail.endDate).unix() * 1000) {
+      newDetail.endDate = moment(startDate).format('YYYY-MM-DD');
     }
 
     setNewTripDetail(newDetail);
@@ -134,11 +162,11 @@ let TripDetail = props => {
 
   const changeEndDate = event => {
     const input = event.target.value;
-    const endDate = new Date(input).getTime();
+    const endDate = moment(input).unix() * 1000;
     const newDetail = { ...newTripDetail, endDate: endDate };
 
-    if (endDate < newTripDetail.startDate) {
-      newDetail.startDate = endDate;
+    if (endDate < moment(newTripDetail.startDate).unix() * 1000) {
+      newDetail.startDate = moment(endDate).format('YYYY-MM-DD');
     }
 
     setNewTripDetail(newDetail);
@@ -146,42 +174,86 @@ let TripDetail = props => {
 
   const changeDescription = event => {
     const input = event.target.value;
+
     setNewTripDetail({ ...newTripDetail, description: input });
   };
 
   const changeDestination = event => {
     const input = event.target.value;
+
     if (!input) {
       setNewTripDetail({ ...newTripDetail, destination: '' });
       return;
     }
-
     const destination = destinations.find(d => d.name === input);
 
     setNewTripDetail({ ...newTripDetail, thumbnail: destination.thumbnail, destination: destination.name });
-    // TODO: set thumbnail
   }
 
   const saveNewTrip = () => {
     const newTrip = newTripDetail;
-    newTrip.startDate = new Date(newTripDetail.startDate).getTime();
-    newTrip.endDate = new Date(newTripDetail.endDate).getTime();
-    saveTrip(newTrip);
+    newTrip.startDate = newTripDetail.startDate;
+    newTrip.endDate = newTripDetail.endDate;
+
+    if (detailType === 'create') {
+      saveTrip(newTrip);
+    } else {
+      saveEditTrip(newTripDetail);
+    }
+
+    setNewTripDetail({ destination: '', startDate: today, endDate: today, description: '' });
   };
 
   const resetNewTrip = () => {
-    changeDescription('');
-    setNewTripDetail(initialNewTrip);
+    if (detailType === 'create') {
+      setNewTripDetail({ destination: '', startDate: today, endDate: today, description: '' });
+    } else if (detailType === 'edit') {
+      handleEdit(tripDetail.id);
+    }
   }
 
   const discardNewTrip = () => {
-    setNewTripDetail(initialNewTrip);
-    changeDescription({ target: { value: '' }});
+    setNewTripDetail({ destination: '', startDate: today, endDate: today, description: '' });
     closeTripDetail();
   };
 
+  const onClickEdit = () => {
+    handleEdit(tripDetail.id);
+
+    setNewTripDetail(tripDetail);
+  }
+
+  const onClickDelete = () => {
+    handleDelete(tripDetail.id);
+  }
+
+  const renderUserName = () => {
+    if (tripDetail.user) {
+      return (
+        <div className={classes.tripUserNameWrap}>
+          <AccountCircleIcon className={classes.userIcon} fontSize="large" />
+          <Typography variant="h6" component="span">
+            {tripDetail.user.name}
+          </Typography>
+        </div>
+      );
+    }
+
+    return <></>;
+  }
+
+  const renderDestinations = () => {
+    if (destinations.length > 0) {
+      return (
+        destinations.map(d => <MenuItem key={d._id} value={d.name}>{d.name}</MenuItem>)
+      );
+    }
+
+    return <></>;
+  }
+
   const renderTripDetail = () => {
-    if (detailType === 'create') {
+    if (detailType === 'create' || detailType === 'edit') {
       const thumbnail = () => {
         if (!newTripDetail.destination) {
           return (
@@ -205,6 +277,8 @@ let TripDetail = props => {
           { thumbnail() }
 
           <CardContent className={classes.tripDetails}>
+            {renderUserName()}
+
             <Typography className={classes.formTitle} gutterBottom variant="h5" component="h3">
               Destination:
               <Select
@@ -212,8 +286,8 @@ let TripDetail = props => {
                 value={newTripDetail.destination}
                 onChange={changeDestination}
               >
-                <MenuItem>None</MenuItem>
-                { destinations.map(d => <MenuItem key={d.id} value={d.name}>{d.name}</MenuItem>) }
+                <MenuItem value=''>None</MenuItem>
+                { renderDestinations() }
               </Select>
             </Typography>
 
@@ -256,6 +330,7 @@ let TripDetail = props => {
               variant="outlined"
               multiline
               rows={4}
+              value={newTripDetail.description}
               onChange={changeDescription}
             />
 
@@ -288,7 +363,6 @@ let TripDetail = props => {
       );
     }
 
-
     return (
       <Card className={classes.tripDetailCard}>
         <CardMedia
@@ -298,9 +372,11 @@ let TripDetail = props => {
         />
 
         <CardContent className={classes.tripDetails}>
-          <Typography gutterBottom variant="h4" component="h3">Destination: {tripDetail.destination}</Typography>
+          {renderUserName()}
+          <Typography gutterBottom variant="h5" component="h4">Destination: {tripDetail.destination}</Typography>
 
-          <Typography variant="h6" component="p">
+          <Typography className={classes.formTitle} gutterBottom variant="h5" component="p">Date</Typography>
+          <Typography variant="h6" component="span">
             {renderDate()}
           </Typography>
 
@@ -317,27 +393,29 @@ let TripDetail = props => {
           />
 
           <div className={classes.buttonWrap}>
-              <Button
-                className={classes.editButton}
-                variant="contained"
-              >
-                Edit
-              </Button>
+            <Button
+              className={classes.editButton}
+              variant="contained"
+              onClick={onClickEdit}
+            >
+              Edit
+            </Button>
 
-              <Button
-                className={classes.deleteButton}
-                variant="contained"
-              >
-                Delete
-              </Button>
-              <Button
-                className={classes.discardButton}
-                variant="contained"
-                onClick={closeTripDetail}
-              >
-                Close
-              </Button>
-            </div>
+            <Button
+              className={classes.deleteButton}
+              variant="contained"
+              onClick={onClickDelete}
+            >
+              Delete
+            </Button>
+            <Button
+              className={classes.discardButton}
+              variant="contained"
+              onClick={closeTripDetail}
+            >
+              Close
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );

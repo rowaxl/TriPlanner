@@ -9,6 +9,8 @@ import { Paper, Container, Card } from '@material-ui/core';
 import './styles/App.css';
 import Index from './pages/index';
 import Trips from './pages/trips';
+import Browse from './pages/browse';
+import ManageUser from './pages/manageUsers';
 
 const App = ({ location }) => {
   return (
@@ -28,6 +30,12 @@ const App = ({ location }) => {
                   </Route>
                   <Route path="/trips">
                     <Trips />
+                  </Route>
+                  <Route path="/browse">
+                    <Browse />
+                  </Route>
+                  <Route path="/manage-users">
+                    <ManageUser />
                   </Route>
                 </Switch>
               </section>
