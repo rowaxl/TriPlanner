@@ -106,7 +106,7 @@ let ManageUsers = props => {
     if (!auth)
       history.push('/');
 
-    if (!userDetail.hasOwnProperty('role') || userDetail.role !== USER_ROLE.ADMIN)
+    if (!userDetail.hasOwnProperty('role') || userDetail.role === USER_ROLE.USER)
       history.push('/');
 
     if (mounted) {
@@ -276,7 +276,8 @@ let ManageUsers = props => {
               <FormControl component="fieldset" className={classes.formControl}>
                 <FormLabel component="legend">User Role</FormLabel>
                 <RadioGroup row value={userForm.role} onChange={handleRadioChange}>
-                  <FormControlLabel value={USER_ROLE.USER} control={<Radio />} label="Standard User" />
+                  <FormControlLabel value={USER_ROLE.USER} control={<Radio />} label="User" />
+                  <FormControlLabel value={USER_ROLE.MANAGER} control={<Radio />} label="User " />
                   <FormControlLabel value={USER_ROLE.ADMIN} control={<Radio />} label="Admin" />
                 </RadioGroup>
               </FormControl>
@@ -307,6 +308,7 @@ let ManageUsers = props => {
                 <FormLabel component="legend">User Role</FormLabel>
                 <RadioGroup row value={userForm.role} onChange={handleRadioChange}>
                   <FormControlLabel value={USER_ROLE.USER} control={<Radio />} label="Standard User" />
+                  <FormControlLabel value={USER_ROLE.MANAGER} control={<Radio />} label="User Manager" />
                   <FormControlLabel value={USER_ROLE.ADMIN} control={<Radio />} label="Admin" />
                 </RadioGroup>
               </FormControl>

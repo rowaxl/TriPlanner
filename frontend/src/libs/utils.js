@@ -7,5 +7,6 @@ export const convertToDay = (millisec) => parseInt(millisec / (1000 * 3600 * 24)
 
 export const USER_ROLE = {
   USER: 1,
-  ADMIN: 2
+  ADMIN: 2,
+  MANAGER: 3
 };

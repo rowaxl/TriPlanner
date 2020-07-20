@@ -95,7 +95,7 @@ const CardBar = props => {
 
       setUserDetail(detail);
 
-      if (detail.role === USER_ROLE.ADMIN) {
+      if (detail.role !== USER_ROLE.USER) {
         setDrawerItems([
           { label: 'Home', path: '/trips', icon: <ExploreIcon color="primary" /> },
           { label: 'Browse', path: '/browse', icon: <SearchIcon color="primary" /> },
