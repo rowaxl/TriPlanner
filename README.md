@@ -1,4 +1,4 @@
-# TriPlanner
+# Triplanner
 
 ## Overview
 Web application for managing travel plan. 

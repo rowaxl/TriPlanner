@@ -9,7 +9,7 @@
 /coverage
 
 # production
-/build
+*/build
 
 # misc
 .DS_Store
@@ -75,3 +75,5 @@ coverage
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+db.json
