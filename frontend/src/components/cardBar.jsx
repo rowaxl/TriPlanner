@@ -88,6 +88,10 @@ const CardBar = props => {
   }
 
   const getUserDetail = async () => {
+    if (!userId) {
+      return;
+    }
+
     const { detail } = await callGetUserDetail(auth, userId);
 
     if (detail !== null) {

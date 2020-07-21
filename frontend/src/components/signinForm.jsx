@@ -47,12 +47,12 @@ const SigninForm = props => {
   return (
     <form className={classes.form} onSubmit={onSubmit} autoComplete="off">
       <div className={classes.formInput}>
-        <Field label="ID" name="signin-id" component={renderTextField} type="text" onChange={onChange} />
+        <Field label="ID" id="signin-id" name="signin-id" component={renderTextField} type="text" onChange={onChange} />
       </div>
       <div className={classes.formInput}>
-        <Field label="Password" name="signin-password" component={renderTextField} type="password" onChange={onChange} />
+        <Field label="Password" id="signin-password" name="signin-password" component={renderTextField} type="password" onChange={onChange} />
       </div>
-      <Button type="submit" disabled={pristine || submitting} variant="contained" color="primary">SIGN IN</Button>
+      <Button id="button-signin" type="submit" disabled={pristine || submitting} variant="contained" color="primary">SIGN IN</Button>
     </form>
   )
 }

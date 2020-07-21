@@ -207,6 +207,7 @@ let Index = props => {
           If you don't have account, 
         </Typography>
         <Button
+          id="button-signup"
           className={classes.showSignupButton}
           onClick={openSignup}
         >
@@ -231,21 +232,20 @@ let Index = props => {
           <Card className={classes.signupForm}>
             <CardContent>
               <Typography variant="h5">Sign up</Typography>
-
-              <form className={classes.form} onSubmit={null} autoComplete="off">
+              <form id="signup-form" className={classes.form} onSubmit={null} autoComplete="off">
                 <div className={classes.formInput}>
-                  <TextField label="ID" name="signup-id" fullWidth type="text"  onChange={onChangeSignupId} />
+                  <TextField label="ID" id="signup-id" fullWidth type="text"  onChange={onChangeSignupId} />
                 </div>
                 <div className={classes.formInput}>
-                  <TextField label="Name" name="signup-name" fullWidth type="text"  onChange={onChangeSignupName} />
+                  <TextField label="Name" id="signup-name" fullWidth type="text"  onChange={onChangeSignupName} />
                 </div>
                 <div className={classes.formInput}>
-                  <TextField label="Password" name="signup-password" fullWidth type="password" onChange={onChangeSignupPassword} />
+                  <TextField label="Password" id="signup-password" fullWidth type="password" onChange={onChangeSignupPassword} />
                 </div>
               </form>
               <div className={classes.buttonWrap}>
-                <Button className={classes.signupButton} type="submit" variant="contained" onClick={handleSignup}>Sign up</Button>
-                <Button className={classes.discardButton} variant="contained" onClick={closeSignup} >Discard</Button>
+                <Button id="button-submit-signup" className={classes.signupButton} type="submit" variant="contained" onClick={handleSignup}>Sign up</Button>
+                <Button id="button-discard-signup" className={classes.discardButton} variant="contained" onClick={closeSignup} >Discard</Button>
               </div>
             </CardContent>
           </Card>

@@ -26,6 +26,7 @@ import {
 } from '../apis/trips';
 
 import { nanoid } from 'nanoid';
+import moment from 'moment';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -246,21 +247,29 @@ let Trips = props => {
     history.push('/browse');
   }
 
+  const renderNextMonth = () => {
+    const date = new Date();
+    date.setMonth(date.getMonth() + 1, 1);
+
+
+    return moment(date).format('MMM YYYY');
+  }
+
   return (
     <CardContent className={classes.root}>
       <CardBar />
 
-      <Typography className={classes.sectionTitle} variant="h4">Upcomming Trips!</Typography>
+      <Typography id="title-upcomming" className={classes.sectionTitle} variant="h4">Upcomming Trips!</Typography>
       <Paper className={classes.eventSquare}>
-        <div className={classes.eventWrap}>
+        <div id="upcomming-trips-wrap" className={classes.eventWrap}>
           { renderTrips('upcomming') }
         </div>
         
       </Paper>
 
-      <Typography className={classes.sectionTitle} variant="h4">Plans for next month(Aug 2020)</Typography>
+      <Typography id="title-next-month" className={classes.sectionTitle} variant="h4">Plans for next month({renderNextMonth()})</Typography>
       <Paper className={classes.eventSquare}>
-        <div className={classes.eventWrap}>
+        <div id="next-month-trips-wrap" className={classes.eventWrap}>
           { renderTrips('nextMonth') }
         </div>
       </Paper>

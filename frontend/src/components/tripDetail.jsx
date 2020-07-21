@@ -245,7 +245,7 @@ let TripDetail = props => {
   const renderDestinations = () => {
     if (destinations.length > 0) {
       return (
-        destinations.map(d => <MenuItem key={d._id} value={d.name}>{d.name}</MenuItem>)
+        destinations.map(d => <MenuItem key={d._id} className="destination-item" value={d.name}>{d.name}</MenuItem>)
       );
     }
 
@@ -268,6 +268,7 @@ let TripDetail = props => {
             component="img"
             className={classes.tripDetailThumbnail}
             image={newTripDetail.thumbnail}
+            title={newTripDetail.destination}
           />
         )
       }
@@ -282,6 +283,7 @@ let TripDetail = props => {
             <Typography className={classes.formTitle} gutterBottom variant="h5" component="h3">
               Destination:
               <Select
+                id="select-destination-create-trip"
                 className={classes.textField}
                 value={newTripDetail.destination}
                 onChange={changeDestination}
@@ -325,6 +327,7 @@ let TripDetail = props => {
               Description: 
             </Typography>
             <TextField
+              id="description"
               className={classes.descriptionForm}
               type="text"
               variant="outlined"
@@ -336,6 +339,7 @@ let TripDetail = props => {
 
             <div className={classes.buttonWrap}>
               <Button
+                id="button-save-new-trip"
                 className={classes.saveButton}
                 variant="contained"
                 onClick={saveNewTrip}
@@ -373,10 +377,10 @@ let TripDetail = props => {
 
         <CardContent className={classes.tripDetails}>
           {renderUserName()}
-          <Typography gutterBottom variant="h5" component="h4">Destination: {tripDetail.destination}</Typography>
+          <Typography id="trip-detail-destination" gutterBottom variant="h5" component="h4">Destination: {tripDetail.destination}</Typography>
 
           <Typography className={classes.formTitle} gutterBottom variant="h5" component="p">Date</Typography>
-          <Typography variant="h6" component="span">
+          <Typography id="trip-detail-dates" variant="h6" component="span">
             {renderDate()}
           </Typography>
 
@@ -384,6 +388,7 @@ let TripDetail = props => {
             Description: 
           </Typography>
           <TextField
+            id="trip-detail-description"
             className={classes.descriptionForm}
             type="text"
             variant="outlined"
@@ -394,6 +399,7 @@ let TripDetail = props => {
 
           <div className={classes.buttonWrap}>
             <Button
+              id="button-edit-trip-detail"
               className={classes.editButton}
               variant="contained"
               onClick={onClickEdit}
@@ -402,6 +408,7 @@ let TripDetail = props => {
             </Button>
 
             <Button
+              id="button-delete-trip-detail"
               className={classes.deleteButton}
               variant="contained"
               onClick={onClickDelete}
@@ -409,6 +416,7 @@ let TripDetail = props => {
               Delete
             </Button>
             <Button
+              id="button-close-trip-detail"
               className={classes.discardButton}
               variant="contained"
               onClick={closeTripDetail}
@@ -423,6 +431,7 @@ let TripDetail = props => {
 
   return (
     <Modal
+      id="trip-detail-modal"
       className={classes.modal}
       open={showTripDetail}
       onClose={closeTripDetail}
