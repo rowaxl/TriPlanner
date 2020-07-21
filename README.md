@@ -6,7 +6,8 @@ Web application for managing travel plan.
 ## Functions
 - Sign in / Sign out
 - User can Create / Read / Update / Delete plan for own.
-- Admin can managing usera and user's plans.
+- Manager can CRUD user
+- Admin can CRUD user and user's plans.
 - Future trips should show day count
 - Trips can filtered (user: date, destination / admin: user, date, destination)
 - Trips for next month can be printed
@@ -33,10 +34,15 @@ Web application for managing travel plan.
 - index:
   - Sign in page
   - If auth expired or not authed, redirect to index
-- plans:
-  - Show list of plans by [calendar](https://fullcalendar.io/)
-  - Show list of plans in current and next month as a plat list
+- trips:
+  - Show list of upcomming plans and next month's as a plat list
   - Click plan can open plan detail as a modal
-  - Filtering list
+- browse:
+  - Show list of all trips of users
+  - Admin can show whole trips of users
+- manage-user:
+  - Show list of users
+  - Admin can CRUD user's detail
+
 
 
