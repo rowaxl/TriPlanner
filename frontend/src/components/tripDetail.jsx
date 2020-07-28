@@ -154,7 +154,7 @@ let TripDetail = props => {
     const newDetail = { ...newTripDetail, startDate: startDate };
 
     if (startDate > moment(newTripDetail.endDate).unix() * 1000) {
-      newDetail.endDate = moment(startDate).format('YYYY-MM-DD');
+      newDetail.endDate = moment(startDate).format('YYYY-MM-DD'); // TODO: FIX
     }
 
     setNewTripDetail(newDetail);
