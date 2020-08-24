@@ -1,6 +1,8 @@
 # Triplanner
 
 ## Overview
+![](overview.png)
+
 Web application for managing travel plan. 
 
 ## Functions
